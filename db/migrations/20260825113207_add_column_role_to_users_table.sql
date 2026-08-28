@@ -1,0 +1,7 @@
+-- migrate:up
+ALTER TABLE IF EXISTS users
+ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'users';
+
+-- migrate:down
+ALTER TABLE users IF EXISTS
+DROP COLUMN IF EXISTS role;

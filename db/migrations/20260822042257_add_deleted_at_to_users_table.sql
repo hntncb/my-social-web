@@ -1,0 +1,7 @@
+-- migrate:up
+ALTER TABLE IF EXISTS users
+ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
+
+-- migrate:down
+ALTER TABLE users IF EXISTS
+DROP COLUMN IF EXISTS deleted_at;
