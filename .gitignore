@@ -1,3 +1,6 @@
 .env
 project.MD
 node_modules
+.vscode/
+1.txt
+docker-compose.override.yml

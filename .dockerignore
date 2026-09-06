@@ -3,3 +3,6 @@ npm-debug.log
 .git
 .gitignore
 .env
+.vscode/
+1.txt
+docker-compose.override.yml
