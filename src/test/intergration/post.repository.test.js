@@ -38,7 +38,7 @@ describe("integration test post repository", () => {
 
     describe("test createPost", () =>{
         
-        it('tra ve thong tin cua post duoc tao', async () => {
+        it('return post created infomation', async () => {
             const title = "bai viet cua toi";
             const content = "hi xin chao";
             const result = await createPost(title, content, author_id);
@@ -46,6 +46,21 @@ describe("integration test post repository", () => {
             assert.ok(result);
             assert.equal(result.title, title);
             assert.equal(result.content, content);
+        });
+    });
+
+    describe("test createPostWithUrl with URL", () =>{
+        
+        it('return post created infomation with URL', async () => {
+            const title = "bai viet cua toi";
+            const content = "hi xin chao";
+            const url = ["https://google.com", "https://facebook.com"]
+            const result = await createPostWithUrl(title, content, author_id, url);
+
+            assert.ok(result);
+            assert.equal(result.title, title);
+            assert.equal(result.content, content);
+            assert.deepStrictEqual(result.url, url);
         });
     });
 });
