@@ -1,8 +1,8 @@
 import * as postRepository from "./post.repository.js";
 
-export const getAllPosts = async () =>{
+export const getAllPosts = async (limit,offset) =>{
      
-    const post = await postRepository.getFirts10Posts();
+    const post = await postRepository.findPostWithOffset(limit,offset);
 
     return post;
 }

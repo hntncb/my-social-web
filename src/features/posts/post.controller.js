@@ -1,7 +1,7 @@
 import * as postService from "./post.services.js"
 
-export const getAllPosts = async (req, res) => {
-    const post = await postService.getAllPosts();
+export const getPostWithOffset = async (req, res) => {
+    const post = await postService.getPostWithOffset(req.params);
     
     return res.json(post);
 } 
@@ -31,7 +31,7 @@ export const patchPostById = async (req, res) => {
 }
 
 export const deletePostById = async (req, res) => {
-    await postService.deletePostById(req.param?.id);
+    await postService.deletePostById(req.params.id);
 
     return res.status(200).json({message: "xoa thanh cong"})
 }

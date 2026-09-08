@@ -7,7 +7,7 @@ const route = Router();
 
 route.get(
     "/",
-    postController.getAllPosts
+    postController.getPostWithOffset
 ); 
 
 route.get(
