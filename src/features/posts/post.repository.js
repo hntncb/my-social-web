@@ -1,6 +1,6 @@
 import pool from "../../database/pool.js"
 
-export const findPostWithOffset = async (limit,offset) => {
+export const findPostsWithOffset = async (limit,offset) => {
     const result = await pool.query(
         `SELECT * FROM posts
         WHERE deleted_at IS NULL
@@ -12,17 +12,17 @@ export const findPostWithOffset = async (limit,offset) => {
     return result.rows;
 }
 
-export const getAllPosts = async (post_number) => {
-    //chưa hoàn thiện
-    /*const result = await pool.query(
+export const findPostsWithCursor = async (post_id, limit) => {
+
+    const result = await pool.query(
         `SELECT * FROM posts
-        WHERE deleted_ad IS NULL
+        WHERE deleted_at IS NULL
             AND id > $1 
-        ORDER BT id LIMIT 10
+        ORDER BY created_at LIMIT $2
         `,
-        [post_number]
-    );*/
-    return null;
+        [post_id, limit]
+    );
+    return result.rows;
 }
 
 export const createPost = async (title, content, author_id) => {

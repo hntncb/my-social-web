@@ -6,8 +6,13 @@ import { authenticate } from "../../midlleware/auth.middleware.js"
 const route = Router();
 
 route.get(
+    "/pages",
+    postController.getPostsWithOffset
+);
+
+route.get(
     "/",
-    postController.getPostWithOffset
+    postController.getPostWithCursor
 ); 
 
 route.get(

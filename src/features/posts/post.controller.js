@@ -1,7 +1,13 @@
 import * as postService from "./post.services.js"
 
-export const getPostWithOffset = async (req, res) => {
-    const post = await postService.getPostWithOffset(req.params);
+export const getPostsWithOffset = async (req, res) => {
+    const post = await postService.getPostsWithOffset(req.params);
+    
+    return res.json(post);
+} 
+
+export const getPostWithCursor = async (req, res) => {
+    const post = await postService.getPostWithCursor(req.params);
     
     return res.json(post);
 } 
