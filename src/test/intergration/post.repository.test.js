@@ -117,5 +117,35 @@ describe("integration test post repository", () => {
             assert.deepStrictEqual(result.length, 0);
         });
     });
+    
+    describe("test findPostsWithCursor", () => {
+        it("should return posts with a limited number of pages", async () => {
+            const post_number = 0;
+            const limit = 10;
+
+            const result = await findPostsWithCursor(post_number, limit);
+
+            assert.ok(result);
+            assert.deepStrictEqual(result.length, 10)
+        });
+
+        it("should return posts with a limited number of pages starting from a specific post", async () => {
+            const post_id = 0;
+            const limit = 10;  
+            const result = await findPostsWithCursor(post_id, limit);
+            let pre_id = post_id
+
+            assert.ok(result);
+            assert.ok(Number(result[0].id) > post_id);
+            assert.deepStrictEqual(result.length, limit);
+            
+            for (let i = 0;i<result.length;i++){
+                let current_id = Number(result[i].id);
+                assert.ok(pre_id < current_id, "id khong tang");
+                pre_id = current_id;
+            };
+        });
+        
+    });
 
 });
