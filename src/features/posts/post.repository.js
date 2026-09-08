@@ -4,7 +4,7 @@ export const findPostsWithOffset = async (limit,offset) => {
     const result = await pool.query(
         `SELECT * FROM posts
         WHERE deleted_at IS NULL
-        ORDER BY created_at
+        ORDER BY created_at ASC, id ASC
         LIMIT $1 OFFSET $2
         `,
         [limit,offset]
@@ -18,7 +18,7 @@ export const findPostsWithCursor = async (post_id, limit) => {
         `SELECT * FROM posts
         WHERE deleted_at IS NULL
             AND id > $1 
-        ORDER BY created_at LIMIT $2
+        ORDER BY created_at ASC, id ASC LIMIT $2
         `,
         [post_id, limit]
     );
