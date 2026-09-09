@@ -1,7 +1,7 @@
 import { describe, it, before, after, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import pool from "../../database/pool.js";
-import { createPostWithUrl, createPost, findPostsWithOffset, findPostsWithCursor } from "../../features/posts/post.repository.js";
+import { findPostById, createPostWithUrl, createPost, findPostsWithOffset, findPostsWithCursor } from "../../features/posts/post.repository.js";
 
 describe("integration test post repository", () => {
     let author_id;
@@ -112,12 +112,13 @@ describe("integration test post repository", () => {
             const offset = 20;
 
             const result = await findPostsWithOffset(limit, offset);
-            
+            //kiểm tra có kết quả hợp lệ hay không
             assert.ok(result);
+            //kiểm tra xem kết quả có trả về rỗng hay không
             assert.deepStrictEqual(result.length, 0);
         });
     });
-    
+
     describe("test findPostsWithCursor", () => {
         it("should return posts with a limited number of pages", async () => {
             const post_number = 0;
@@ -146,6 +147,16 @@ describe("integration test post repository", () => {
             };
         });
         
+    });
+
+    describe("test findPostById", () => {
+        it("should return a post with designated id"), async() => {
+            const id = 1
+            const result = await findPostById(id);
+            
+            assert.ok(result);
+            assert.deepStrictEqual(result, id)
+        };
     });
 
 });
