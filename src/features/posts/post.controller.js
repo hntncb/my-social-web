@@ -28,7 +28,7 @@ export const createPost = async (req, res) => {
 }
 
 export const patchPostById = async (req, res) => {
-    const post = await postService.patchPostById(req.body,req.params.id);
+    const post = await postService.patchPostById(req.params.id,req.body);
 
     return res.status(200).json({
         message: "sua thanh cong",
