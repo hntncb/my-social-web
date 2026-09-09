@@ -1,6 +1,6 @@
 import * as postRepository from "./post.repository.js";
 
-export const getPostPages = async (limit,offset) =>{
+export const getPostsWithOffset = async (limit,offset) =>{
      
     const post = await postRepository.findPostsWithOffset(limit,offset);
 
@@ -49,15 +49,15 @@ export const createPost = async ({title, content, author_id, url}) => {
 
 }
 
-export const patchPostById = async (id) => {
-    const post = postRepository.updatePostById(id);
+export const patchPostById = async (id, data) => {
+    const post = await postRepository.getPostById(id);
     
     if (!post) {
         const error = new Error("bai viet khong ton tai");
         error.status = 404;
         throw error;
     }
-
+    await postRepository.updatePostById(id, data);
     return post;
 } 
 
