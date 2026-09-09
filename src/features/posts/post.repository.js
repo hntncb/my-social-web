@@ -1,5 +1,16 @@
 import pool from "../../database/pool.js"
 
+export const findPostById = async (id) => {
+    const result = pool.query(
+        `SELECT * FROM posts
+        WHERE deleted_at IS NULL 
+        AND id = $1
+        `,
+        [id]
+    );
+    return result.rows[0];
+};
+
 export const findPostsWithOffset = async (limit,offset) => {
     const result = await pool.query(
         `SELECT * FROM posts
@@ -62,17 +73,37 @@ export const createPostWithUrl = async (title, content, author_id, url) => {
     }
 }
 
-export const updatePostById = async () => {
-    //chưa hoàn thiện
-    /*const result = await pool.query(
+export const updatePostById = async (id, data) => {
+    //todo: khai báo client, update = nếu không update url thì giữ nguyên, nếu có url thì gọi transaction
+    //chỉ sửa title, content, phần không có thì là undefined
+    //data có 1 hoặc 2 phần tử của mảng
+    //ghép content = và title = thế nào?
+    for (index of data){
+        
+        index++
+    };
+
+    const result = await pool.query(
+        `UPDATE posts
+        SET $${index}
+        WHERE id = $$${index+1}
+        RETURNING *
+        `,
+        [data[index],id]
+    );
+    return result.rows[0] ?? null;
+}
+
+export const updatePostWithURLById = async () => {
+    //todo: khai báo client, update = nếu không update url thì giữ nguyên, nếu có url thì gọi transaction
+    const result = await pool.query(
         `UPDATE posts
         SET 
         WHERE
         RETURNING 
         `,
     );
-    return result.rows[0] ?? null;*/
-    return null;
+    return result.rows[0] ?? null;
 }
 
 export const deletePostById = async (id) => {
