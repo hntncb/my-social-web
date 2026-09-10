@@ -1,5 +1,5 @@
 import * as postRepository from "./post.repository.js";
-
+import transaction from "../../database/transaction.js";
 export const getPostsWithOffset = async (limit,offset) =>{
      
     const post = await postRepository.findPostsWithOffset(limit,offset);
@@ -9,7 +9,7 @@ export const getPostsWithOffset = async (limit,offset) =>{
 
 export const getPostWithCursor = async (post_number) =>{
      
-    const post = await postRepository.findPostWithCursor(post_number);
+    const post = await postRepository.findPostsWithCursor(post_number);
 
     return post;
 }
@@ -47,19 +47,53 @@ export const createPost = async ({title, content, author_id, url}) => {
         url
     );
 
-}
+};
 
 export const patchPostById = async (id, data) => {
-    const post = await postRepository.getPostById(id);
+
+    const post = await postRepository.findPostById(id);
     
     if (!post) {
         const error = new Error("bai viet khong ton tai");
         error.status = 404;
         throw error;
     }
-    await postRepository.updatePostById(id, data);
-    return post;
-} 
+
+    const fieldMap = {
+        title: "posts",
+        content: "posts",
+        url: "postLink",
+    }
+    //nếu key của fieldMap == key của data => đẩy key-value object có tên key của fieldMap
+    //nếu postLink có dữ liệu thì update bảng post_links
+    const splitData = () => {
+        const result = {
+            posts: {},
+            postLink: {},
+        }
+        
+        for (const [key, value] of Object.entries(data)){
+            const field = fieldMap[key];
+            result[field][key] = value;
+        };
+        data = result;
+    };
+
+    splitData();
+
+    if(!data["postLink"]){
+        await postRepository.updatePostById(id, data);
+    }else{
+        return transaction(async(client) => {
+            //console.log(id, data.posts);
+            const post = await postRepository.updatePostById(client, id, data.posts);
+            
+            await postRepository.upsertPostLink(client, post.id, data.postLink);
+            return post;
+        });
+    };
+
+};
 
 export const deletePostById = async (id) => {
     const post = postRepository.deletePostById(id);
@@ -71,4 +105,4 @@ export const deletePostById = async (id) => {
     }
 
     return post;
-} 
+};
