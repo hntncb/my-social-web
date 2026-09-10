@@ -1,7 +1,7 @@
 import { describe, it, before, after, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import pool from "../../database/pool.js";
-import { findPostById, createPostWithUrl, createPost, findPostsWithOffset, findPostsWithCursor } from "../../features/posts/post.repository.js";
+import { deletePostById, findPostById, createPostWithUrl, createPost, findPostsWithOffset, findPostsWithCursor } from "../../features/posts/post.repository.js";
 
 describe("integration test post repository", () => {
     let author_id;
@@ -157,6 +157,29 @@ describe("integration test post repository", () => {
             assert.ok(result);
             assert.deepStrictEqual(result, id)
         };
+    });
+
+    describe("test deletePostById", () =>{
+        it("should return success delete row",async () =>{
+            const id = 1
+            const result = await deletePostById(id);
+            //trả về result hợp lệ
+            assert.ok(result);
+            //trả về result có deleted_at
+            assert.ok(result.deleted_at)
+        });
+        it("should return null",async () =>{
+            const id = 33859054
+            const result = await deletePostById(id);
+            //không có result trả về
+            assert.deepStrictEqual(result, null);
+        });
+        it("should return null",async () =>{
+            const id = "33859054"
+            const result = await deletePostById(id);
+            //không có result trả về
+            assert.deepStrictEqual(result, null);
+        });
     });
 
 });
