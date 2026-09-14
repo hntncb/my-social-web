@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/app.js",
+    "dev": "node --watch src/server.js",
     "db:new": "npx dbmate new",
     "db:up": "npx dbmate up",
     "db:down": "npx dbmate down",
@@ -16,7 +16,8 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "dbmate": "^2.35.0"
+    "dbmate": "^2.35.0",
+    "supertest": "^7.2.2"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -24,6 +25,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.23.0",
-    "redis": "^6.2.1"
+    "redis": "^6.2.1",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1"
   }
 }
