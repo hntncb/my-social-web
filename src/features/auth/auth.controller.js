@@ -1,7 +1,9 @@
 import * as authServices from "./auth.service.js"
 
 export const login = async (req, res) => {
-    const user = await authServices.login(req.body);
+
+    const {username, password} = req.body;
+    const user = await authServices.login({username, password});
 
     return res.status(200).json({
         message: "dang nhap thanh cong",
@@ -10,7 +12,12 @@ export const login = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-    const user = await authServices.create(req.body);
+    
+    const {email, username, password} = req.body;
+    const user = await authServices.create({email, username, password});
 
-    return res.status(201).json(user);
+    return res.status(201).json({
+        message: "dang ky thanh cong",
+        data: user
+    });
 };
