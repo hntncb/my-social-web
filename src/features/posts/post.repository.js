@@ -59,11 +59,13 @@ export const createPostWithUrl = async (title, content, author_id, url) => {
 
         const post = postResult.rows[0];
 
-        await client.query("INSERT INTO post_links (post_id, url) VALUES ($1,$2) RETURNING *",[post.id, url]);
+        await client.query("INSERT INTO post_links (post_id, url) VALUES ($1,$2) RETURNING  *",[post.id, url]);
 
         await client.query("COMMIT");
+        
+        const {id, ...postWithoutId} = post;
 
-        return {...post, url};
+        return {...postWithoutId, url};
 
     } catch (error) {
         await client.query("ROLLBACK");
@@ -86,7 +88,7 @@ export const updatePostById = async (client, id, data) => {
         index++;
     };
     
-    values.push(id);
+    values.push(Number(id));
 
     const sql =`UPDATE posts
         SET ${sqlString}
@@ -113,7 +115,7 @@ export const upsertPostLink = async (client, id, data) => {
     };
     
     values.push(post_id);
-    console.log(values);
+    
     const sql = `
         INSERT INTO post_links (${sqlString}, post_id)
         VALUES ($1, $2)
@@ -192,3 +194,16 @@ export const deletePostById = async (id) => {
     );
     return result.rows[0] ?? null;
 }
+
+const postRepository =  {
+    findPostById,
+    findPostsWithOffset,
+    findPostsWithCursor,
+    createPost,
+    createPostWithUrl,
+    updatePostById,
+    upsertPostLink,
+    deletePostById,
+};
+
+export default postRepository;
