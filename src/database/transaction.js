@@ -1,6 +1,6 @@
 import pool from "./pool.js";
 
-const transaction = async (callback) =>{
+export const transaction = async (callback) =>{
     const client = await pool.connect();
 
     try{
@@ -20,4 +20,6 @@ const transaction = async (callback) =>{
     };
 };
 
-export default transaction;
+const transactionModule = {transaction};
+
+export default transactionModule;
