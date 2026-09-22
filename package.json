@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/server.js",
+    "test:unit": "node --test test/unit/**/*.test.js",
+    "test:unit:watch": "node --test --watch test/unit/**/*.test.js",
+    "test:integration": "docker compose run --rm api-test",
+    "test:integration:internal": "npm run db:up && node --test test/integration/**/*.test.js --test-concurrency=1",
+    "test:integration:debug": "docker compose run --rm -p 9229:9229 api-test node --inspect-brk=0.0.0.0:9229 --test",
+    "test": "npm run test:unit && npm run test:integration",
     "db:new": "npx dbmate new",
     "db:up": "npx dbmate up",
     "db:down": "npx dbmate down",
-    "db:status": "npx dbmate status"
+    "db:status": "npx dbmate status",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +22,8 @@
   "type": "module",
   "devDependencies": {
     "dbmate": "^2.35.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
     "supertest": "^7.2.2"
   },
   "dependencies": {
