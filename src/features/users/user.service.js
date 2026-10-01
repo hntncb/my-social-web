@@ -1,5 +1,8 @@
-import * as userRepository from "./user.repository.js";
-import redisClient from "../../database/redis.js"
+import userRepository from "./user.repository.js";
+//import redisClient from "../../database/redis.js"
+import bcrypt from 'bcrypt';
+
+const SALT_ROUND = 10;
 
 export const getAll = async () => {
     return userRepository.findAll();
@@ -7,16 +10,16 @@ export const getAll = async () => {
 
 export const getById = async (id) => {
     const cacheKey = `user:${id}`;
-    const cachedUser = await redisClient.get(cacheKey);
+    //const cachedUser = await redisClient.get(cacheKey);
     const user = await userRepository.findById(id);
 
-    if (cachedUser) {
+    /*if (cachedUser) {
         console.log("GET USER FROM REDIS");
 
         return JSON.parse(cachedUser)
     }
 
-    console.log("GET USER FROM POSTGRESQL");
+    console.log("GET USER FROM POSTGRESQL");*/
 
     if (!user) {
         const error = new Error("khong tim thay user");
@@ -24,13 +27,13 @@ export const getById = async (id) => {
         throw error;
     }
 
-    await redisClient.set(
+    /*await redisClient.set(
         cachedUser, 
         JSON.stringtify(user),
         {
             EX: 60
         }
-    )
+    )*/
 
     return user;
 };
@@ -42,6 +45,11 @@ export const patchById = async (id, data) => {
         throw error;
     }
 
+    if (data.password !== undefined) {
+            const password_hash = await bcrypt.hash(data.password, SALT_ROUND)
+            data.password_hash = password_hash;
+        }
+
     const user = await userRepository.updateById(id, data);
 
     if (!user) {
@@ -50,7 +58,7 @@ export const patchById = async (id, data) => {
         throw error;
     }
 
-    await redisClient.del(`user:${id}`);
+    //await redisClient.del(`user:${id}`);
     return user;
 };
 
@@ -64,7 +72,7 @@ export const deleteById = async (id) => {
 
     await userRepository.deleteById(id)
     
-    await redisClient.del(`user:${id}`);
+    //await redisClient.del(`user:${id}`);
 
     return user;
 };
