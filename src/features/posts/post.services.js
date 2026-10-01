@@ -1,5 +1,5 @@
 import postRepository from "./post.repository.js";
-import {transaction} from "../../database/transaction.js";
+import transactionModule from "../../database/transaction.js";
 
 export const getPostsWithOffset = async (limit,offset) =>{
      
@@ -79,7 +79,7 @@ export const patchPostById = async (id, data) => {
     const hasPostsData = Object.keys(splitData.posts).length > 0;
     const hasPostLinkData = Object.keys(splitData.postLink).length > 0;
 
-    return transaction(async (client) => {
+    return transactionModule.transaction(async (client) => {
         let updatedPost = post;
         let updatedLink = {};
 
