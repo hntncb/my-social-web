@@ -1,6 +1,6 @@
-import bcrypt, { hash } from "bcrypt";
-import * as userRepository from "../users/user.repository.js";
-import { generateAccessToken } from "../../utils/jwt.js";
+import bcrypt from "bcrypt";
+import userRepository from "../users/user.repository.js";
+import jwtGenToken from "../../utils/jwt.js";
 
 const SALT_ROUNDS = 10;
 
@@ -20,7 +20,7 @@ export const login = async ({username, password})=>{
         throw error;
     }
 
-    const accessToken = generateAccessToken(user);
+    const accessToken = jwtGenToken.generateAccessToken(user);
 
     return {
         user:{
@@ -52,3 +52,7 @@ export const create = async ({ email, username, password }) => {
         password_hash,
     });
 }; 
+
+const authServices = {login, create};
+
+export default authServices;
