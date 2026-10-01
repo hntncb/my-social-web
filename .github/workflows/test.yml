@@ -17,13 +17,10 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Run Unit Tests
-        run: npm run test
 
       - name: Check required secrets
         env:
@@ -38,20 +35,10 @@ jobs:
           test -n "$POSTGRES_DB" || (echo "POSTGRES_DB is missing" && exit 1)
           test -n "$JWT_SECRET" || (echo "JWT_SECRET is missing" && exit 1)
           test -n "$JWT_EXPIRES_IN" || (echo "JWT_EXPIRES_IN is missing" && exit 1)
-      
           echo "All required secrets are present."
-      
+
       - name: Run Unit Tests
-        run: npm run test
-      
-      - name: Run Integration Tests via Docker
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
-        run: docker compose --profile test run --rm api-test npm test
+        run: npm run test:unit
 
       - name: Run Integration Tests via Docker
         env:
@@ -60,15 +47,15 @@ jobs:
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
-        run: docker compose --profile test run --rm api-test npm test
+        run: docker compose --profile test run --rm api-test npm run test:integration:internal
 
       - name: Debug Docker
         if: always()
         run: |
-          docker compose --profile test ps -a
+          docker ps -a
 
-          echo "===== db-test ====="
-          docker compose --profile test logs --no-color db-test || true
+          echo "===== postgres-node-test ====="
+          docker logs postgres-node-test || true
 
-          echo "===== api-test ====="
-          docker compose --profile test logs --no-color api-test || true
+          echo "===== node-api-test ====="
+          docker logs node-api-test || true
