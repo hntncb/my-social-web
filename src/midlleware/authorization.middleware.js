@@ -4,6 +4,7 @@ export const authorizeOwner = (req, res, next) => {
 
     if (req.user?.id !== userId){
         return res.status(403).json({
+            success: false,
             message: "ban khong co quyen thuc hien thao tac nay"
         });
     }
@@ -19,6 +20,7 @@ export const authorizeOwnerOrAdmin = (req, res, next) => {
 
     if (req.user?.id !== userId){
         return res.status(403).json({
+            success: false,
             message: "ban khong co quyen thuc hien thao tac nay"
         });
     }
@@ -28,6 +30,7 @@ export const authorizeOwnerOrAdmin = (req, res, next) => {
 export const authorizeAdmin = (req, res, next) => {
     if (req.user.role !== "admin"){
         return res.status(403).json({
+            success: false,
             message: "ban khong co quyen truy cap"
         });
     }
@@ -38,9 +41,14 @@ export const authorizeRoles = (...allowedRoles) => {
     return (req, res, next) => {
         if (!allowedRoles.includes(req.user.role)){
             return res.status(403).json({
+                success: false,
                 message: "ban khong co quyen truy cap"
             });
         }
         next();
     };
 };
+
+const authorizationMiddleware = {authorizeOwner, authorizeAdmin, authorizeOwnerOrAdmin, authorizeRoles};
+
+export default authorizationMiddleware;
