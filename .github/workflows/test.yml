@@ -25,6 +25,23 @@ jobs:
       - name: Run Unit Tests
         run: npm run test
 
+      # 👇 THÊM STEP NÀY Ở ĐÂY
+      - name: Check required secrets
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+        run: |
+          test -n "$POSTGRES_USER" || (echo "POSTGRES_USER is missing" && exit 1)
+          test -n "$POSTGRES_PASSWORD" || (echo "POSTGRES_PASSWORD is missing" && exit 1)
+          test -n "$POSTGRES_DB" || (echo "POSTGRES_DB is missing" && exit 1)
+          test -n "$JWT_SECRET" || (echo "JWT_SECRET is missing" && exit 1)
+          test -n "$JWT_EXPIRES_IN" || (echo "JWT_EXPIRES_IN is missing" && exit 1)
+
+          echo "All required secrets are present."
+
       - name: Run Integration Tests via Docker
         env:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
@@ -33,6 +50,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
         run: docker compose --profile test run --rm api-test npm test
+
       - name: Debug Docker
         if: always()
         run: |
