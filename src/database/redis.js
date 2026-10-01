@@ -1,4 +1,4 @@
-import { createClient } from "redis";
+/*import { createClient } from "redis";
 
 console.log("REDIS_URL:", process.env.REDIS_URL);
 
@@ -14,4 +14,4 @@ await redisClient.connect();
 
 console.log("Redis connected");
 
-export default redisClient;
+export default redisClient;*/
