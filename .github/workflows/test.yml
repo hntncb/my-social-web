@@ -33,3 +33,13 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
         run: docker compose --profile test run --rm api-test npm test
+      - name: Debug Docker
+        if: always()
+        run: |
+          docker compose --profile test ps -a
+
+          echo "===== db-test ====="
+          docker compose --profile test logs --no-color db-test || true
+
+          echo "===== api-test ====="
+          docker compose --profile test logs --no-color api-test || true
