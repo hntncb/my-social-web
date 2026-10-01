@@ -24,6 +24,7 @@ export const findByUsername = async (username) => {
     return result.rows[0] ?? null;
 };
 
+
 export const findByUsernamewithPassword = async (username) => {
     const result = await pool.query(
         `
@@ -122,3 +123,7 @@ export const deleteById = async (id) => {
     )
     return result.rows[0] ?? null;
 }
+
+const userRepository = {createUser,findAll,findByEmail,findById,findByUsername,findByUsernamewithPassword,deleteById,updateById}
+
+export default userRepository;
