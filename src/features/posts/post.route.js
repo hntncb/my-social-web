@@ -1,7 +1,8 @@
 import { Router } from "express"
 import * as postController from "./post.controller.js" 
-import { authorizeOwner, authorizeOwnerOrAdmin } from "../../midlleware/authorization.middleware.js";
+import { authorizePostOwner, authorizePostOwnerOrAdmin } from "./post.authorization.js";
 import { authenticate } from "../../midlleware/auth.middleware.js"
+import validateParams from "../../midlleware/validateParams.middleware.js";
 
 const route = Router();
 /**
@@ -30,6 +31,7 @@ const route = Router();
  */
 route.get(
     "/pages",
+    validateParams.validateOffsetParams,
     postController.getPostsWithOffset
 );
 /**
@@ -55,6 +57,7 @@ route.get(
  */
 route.get(
     "/",
+    validateParams.validateCursorParams,
     postController.getPostWithCursor
 ); 
 /**
@@ -75,6 +78,7 @@ route.get(
  */
 route.get(
     "/:id",
+    validateParams.validationId,
     postController.getPostById
 );
 /**
@@ -106,6 +110,7 @@ route.get(
 route.post(
     "/",
     authenticate,
+    validateParams.validateCreatePost,
     postController.createPost
 ); 
 
@@ -141,7 +146,8 @@ route.post(
 route.patch(
     "/:id",
     authenticate,
-    authorizeOwner,
+    authorizePostOwner,
+    validateParams.validateUpdatePost,
     postController.patchPostById
 );
 
@@ -165,7 +171,8 @@ route.patch(
 route.delete(
     "/:id",
     authenticate,
-    authorizeOwnerOrAdmin,
+    authorizePostOwnerOrAdmin,
+    validateParams.validationId,
     postController.deletePostById
 );
 
