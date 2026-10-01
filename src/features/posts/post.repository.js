@@ -63,7 +63,7 @@ export const createPostWithUrl = async (title, content, author_id, url) => {
 
         await client.query("COMMIT");
         
-        const {id, ...postWithoutId} = post;
+        const {...postWithoutId} = post;
 
         return {...postWithoutId, url};
 
@@ -76,29 +76,35 @@ export const createPostWithUrl = async (title, content, author_id, url) => {
 };
 
 export const updatePostById = async (client, id, data) => {
-    let index = 1;
-    let sqlString = "";
-    const values = [];
-    for (const [key, value] of Object.entries(data)){
-        if(index >= 2){
-            sqlString += `,`
-        }
-        sqlString += `${key} = $${index}`;
-        values.push(value);
-        index++;
-    };
+    const ALLOWED_COLUMNS = new Set(['title', 'content']);
     
-    values.push(Number(id));
+    const entries = Object.entries(data).filter(([key]) => ALLOWED_COLUMNS.has(key));
 
-    const sql =`UPDATE posts
-        SET ${sqlString}
+    if (entries.length === 0) {
+        return null;
+    }
+
+    const setClauses = [];
+    const values = [];
+
+    entries.forEach(([key, value], index) => {
+        setClauses.push(`${key} = $${index + 1}`);
+        values.push(value);
+    });
+
+    values.push(Number(id));
+    const idPlaceholderIndex = values.length;
+
+    const sql = `UPDATE posts
+        SET ${setClauses.join(', ')}
         WHERE deleted_at IS NULL 
-        AND id = $${index}
+        AND id = $${idPlaceholderIndex}
         RETURNING *
-        `
+        `;
+
     const result = await client.query(sql, values);
     return result.rows[0] ?? null;
-}
+};
 
 export const upsertPostLink = async (client, id, data) => {
     let index = 1;
@@ -115,7 +121,7 @@ export const upsertPostLink = async (client, id, data) => {
     };
     
     values.push(post_id);
-    
+    //console.log(values);
     const sql = `
         INSERT INTO post_links (${sqlString}, post_id)
         VALUES ($1, $2)
