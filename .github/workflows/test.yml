@@ -23,7 +23,13 @@ jobs:
         run: npm ci
 
       - name: Run Unit Tests
-        run: npm run test:unit
+        run: npm run test
 
       - name: Run Integration Tests via Docker
-        run: docker compose --profile test run --rm api-test
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+        run: docker compose --profile test run --rm api-test npm test
