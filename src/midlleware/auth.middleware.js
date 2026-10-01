@@ -10,7 +10,7 @@ export const authenticate = (req, res, next) => {
 
     const [type, token] = authorization.split(" ");
 
-    if (type !== "Bearer" || !token){
+    if (type !== "Bearer" || !token) {
         return res.status(401).json({
             message: "token khong hop le"
         });
@@ -27,7 +27,7 @@ export const authenticate = (req, res, next) => {
             role: payload.role
         };
 
-        next()
+        next();
     } catch (error) {
         return res.status(401).json({
             message: "token khong hop le hoac da het han"
@@ -35,3 +35,6 @@ export const authenticate = (req, res, next) => {
     }
 };
 
+const authMiddleware = { authenticate };
+
+export default authMiddleware;
