@@ -101,7 +101,8 @@ export const updateById = async (id ,data) => {
     const result = await pool.query(
         `
         UPDATE users
-        SET ${fields.join(", ")}
+        SET ${fields.join(", ")},
+        updated_at = NOW()
         WHERE id = $${index} AND deleted_at IS NULL
         RETURNING id ,email ,username, updated_at
         `,
@@ -116,7 +117,7 @@ export const deleteById = async (id) => {
     const result = await pool.query(
         `
         UPDATE users
-        SET deleted_at = NOW()
+        SET deleted_at = NOW(), updated_at = NOW()
         WHERE id = $1
         `,
         [id]
