@@ -96,7 +96,8 @@ export const updatePostById = async (client, id, data) => {
     const idPlaceholderIndex = values.length;
 
     const sql = `UPDATE posts
-        SET ${setClauses.join(', ')}
+        SET ${setClauses.join(', ')},
+        updated_at = NOW()
         WHERE deleted_at IS NULL 
         AND id = $${idPlaceholderIndex}
         RETURNING *
