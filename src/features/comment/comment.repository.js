@@ -7,6 +7,15 @@ export const findAll = async() => {
     )
     return rows;
 }
+export const findById = async (id) => {
+    const { rows } = await pool.query(
+        `SELECT * FROM comments 
+        WHERE id = $1 
+        AND deleted_at IS NULL`, 
+        [Number(id)]
+    );
+    return rows[0] ?? null;
+};
 export const findByPostId = async(post_id) => {
     const {rows} = await pool.query(`
         SELECT 
@@ -67,6 +76,6 @@ export const deleteById = async(id) => {
     return (rowCount ?? 0) > 0;;
 }
 
-const commentRepository = {findAll, findByPostId,findReply,create,update,deleteById};
+const commentRepository = {findAll,findById, findByPostId,findReply,create,update,deleteById};
 
 export default commentRepository;

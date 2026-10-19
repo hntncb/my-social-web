@@ -1,10 +1,24 @@
 import { Router } from "express";
-import { authorizePostOwner, authorizePostOwnerOrAdmin } from "./post.authorization.js";
+import { authorizeCommentOwner, authorizeCommentOwnerOrAdmin } from "../comment/comment.authorization.js";
 import { authenticate } from "../../midlleware/auth.middleware.js";
 import validateParams from "../../midlleware/validateParams.middleware.js";
 import commentController from "./comment.controller.js";
 
 const route = Router();
+
+// Middleware phụ trợ kiểm tra tham số dạng số nguyên dương theo tên param
+const validateParamId = (paramName) => (req, res, next) => {
+    const rawValue = req.params[paramName];
+    const parsedValue = Number(rawValue);
+    if (!rawValue || isNaN(parsedValue) || parsedValue < 0 || !Number.isInteger(parsedValue)) {
+        return res.status(400).json({
+            success: false,
+            message: `${paramName} khong hop le hoac bi thieu`
+        });
+    }
+    req.params[paramName] = parsedValue;
+    next();
+};
 
 /**
  * @openapi
@@ -38,7 +52,7 @@ route.get("/", commentController.getAll);
  */
 route.get(
     "/post/:post_id",
-    validateParams.validatePositiveIntegers([{ location: 'params', name: 'post_id' }]),
+    validateParamId('post_id'),
     commentController.getByPostId
 );
 
@@ -61,7 +75,7 @@ route.get(
  */
 route.get(
     "/reply/:parent_id",
-    validateParams.validatePositiveIntegers([{ location: 'params', name: 'parent_id' }]),
+    validateParamId('parent_id'),
     commentController.getReply
 );
 
@@ -93,7 +107,6 @@ route.get(
 route.post(
     "/",
     authenticate,
-    validateParams.validateCreateComment,
     commentController.create
 );
 
@@ -127,9 +140,8 @@ route.post(
 route.patch(
     "/:id",
     authenticate,
-    authorizePostOwner,
+    authorizeCommentOwner,
     validateParams.validationId,
-    validateParams.validateUpdateComment,
     commentController.update
 );
 
@@ -155,7 +167,7 @@ route.patch(
 route.delete(
     "/:id",
     authenticate,
-    authorizePostOwnerOrAdmin,
+    authorizeCommentOwnerOrAdmin,
     validateParams.validationId,
     commentController.deleteById
 );

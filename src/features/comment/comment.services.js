@@ -2,21 +2,11 @@ import commentRepository from "./comment.repository.js";
 
 export const getAll = async() => {
     const comment = await commentRepository.findAll();
-    if(!comment) {
-        const error = new Error("khong co comment")
-        error.statusCode = 404;
-        throw error
-    };
-    return comment;
+    return comment || [];
 }
 export const getByPostId = async(post_id) => {
     const comment = await commentRepository.findByPostId(post_id);
-    if(!comment) {
-        const error = new Error("khong co comment")
-        error.statusCode = 404;
-        throw error
-    };
-    return comment;
+    return comment || [];
 }
 export const getReply = async(parent_id) => {
     const comment = await commentRepository.findReply(parent_id);
