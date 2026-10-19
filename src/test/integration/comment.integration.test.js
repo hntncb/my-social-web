@@ -40,7 +40,7 @@ describe("comment integration test", () => {
             [password_hash]
         );
 
-        // Tạo bài viết mẫu
+        // Tạo bài viết mẫu để bình luận
         const post = await pool.query(
             `INSERT INTO posts (title, content, author_id)
              VALUES ('Test Post', 'Content Post', $1)
@@ -85,6 +85,7 @@ describe("comment integration test", () => {
                 .send({
                     user_id: user_id,
                     post_id: post_id,
+                    parent_id: null,
                     content: "This is a test comment"
                 })
                 .expect(401);
@@ -144,7 +145,7 @@ describe("comment integration test", () => {
         });
 
         it("should return status 403 when non-owner tries to update", async () => {
-            await request(app)
+            const response = await request(app)
                 .patch(`/v1/comments/${comment_id}`)
                 .set("Authorization", `Bearer ${another_user_token}`)
                 .send({ content: "Updated content" })
