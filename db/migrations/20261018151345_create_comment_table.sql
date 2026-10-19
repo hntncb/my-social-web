@@ -1,13 +1,13 @@
 -- migrate:up
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id BIGINT UNIQUE NOT NULL,
+    user_id BIGINT NOT NULL,
     post_id BIGINT NOT NULL,
-    parent_id BIGINT NOT NULL,
-    content VARCHAR(255) UNIQUE,
+    parent_id BIGINT,
+    content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),  
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(), 
-    delete_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    deleted_at TIMESTAMP WITH TIME ZONE,
 
     CONSTRAINT fk_comment_post
     FOREIGN KEY (post_id)
