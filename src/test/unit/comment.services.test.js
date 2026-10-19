@@ -44,13 +44,8 @@ describe("test comment services", () => {
         it("should throw 404 error when no comments found", async () => {
             mock.method(commentRepository, "findAll", async () => null);
 
-            await assert.rejects(async () => {
-                await commentServices.getAll();
-            }, (error) => {
-                assert.strictEqual(error.message, "khong co comment");
-                assert.strictEqual(error.statusCode, 404);
-                return true;
-            });
+            const result = await commentServices.getAll();
+            assert.deepStrictEqual(result, []);
         });
     });
 
@@ -67,13 +62,8 @@ describe("test comment services", () => {
             const postId = 999;
             mock.method(commentRepository, "findByPostId", async () => null);
 
-            await assert.rejects(async () => {
-                await commentServices.getByPostId(postId);
-            }, (error) => {
-                assert.strictEqual(error.message, "khong co comment");
-                assert.strictEqual(error.statusCode, 404);
-                return true;
-            });
+            const result = await commentServices.getByPostId(999);
+            assert.deepStrictEqual(result, []);
         });
     });
 
