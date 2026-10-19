@@ -109,6 +109,40 @@ const validatePostBody = (body) => {
     return { title, content, url, urlError };
 };
 
+export const validateCreateComment = (req, res, next) => {
+    const { user_id,post_id, parent_id, content, urlError } = validatePostBody(req.body);
+
+    if (!content) {
+        return res.status(400).json({
+            success: false,
+            message: 'du lieu khong hop le'
+        });
+    }
+
+    if (urlError) {
+        return res.status(400).json({ success: false, message: urlError });
+    }
+
+    next();
+};
+
+export const validateUpdateComment = (req, res, next) => {
+    const {content} = validatePostBody(req.body);
+
+    if (!content) {
+        return res.status(400).json({
+            success: false,
+            message: 'phai co it content'
+        });
+    }
+
+    if (urlError) {
+        return res.status(400).json({ success: false, message: urlError });
+    }
+
+    next();
+};
+
 export const validateCreatePost = (req, res, next) => {
     const { title, content, url, urlError } = validatePostBody(req.body);
 
@@ -169,6 +203,6 @@ const validateUserParams = (req, res, next) =>{
     next();
 }
 
-const validateParams = { validationId, validationUsername, validationPassword, validateCursorParams, validateOffsetParams, validateCreatePost, validateUpdatePost, validateUserParams, validatePostBody };
+const validateParams = { validateUpdateComment, validateCreateComment, validationId, validationUsername, validationPassword, validateCursorParams, validateOffsetParams, validateCreatePost, validateUpdatePost, validateUserParams, validatePostBody };
 
 export default validateParams;
