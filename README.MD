@@ -1,3 +1,4 @@
+Repo đã ngừng phát triển, chuyển sang: https://github.com/hntncb/social-web/
 # Post API — RESTful Blog Backend
 
 Backend API cho ứng dụng blog, được xây dựng bằng Node.js và Express. Dự án tập trung vào thiết kế REST API, xác thực và phân quyền người dùng, làm việc với PostgreSQL, quản lý migration cơ sở dữ liệu và kiểm thử tự động.
